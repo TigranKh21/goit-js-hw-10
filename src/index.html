@@ -7,15 +7,20 @@
       rel="stylesheet"
       href="https://unpkg.com/slim-select@latest/dist/slimselect.css"
     />
+    <link rel="stylesheet" href="../node_modules/notiflix/dist/notiflix-3.2.6.min.css" />
     <link rel="stylesheet" href="./styles.css"></link>
     <title>Homework 10</title>
   </head>
   <body>
+    <div class="wrapper is-hidden js-wrapper">
+      <span class="loader"></span>
+    </div>
     <select class="breed-select" id="mySelect" single></select>
-    <p class="loader">Loading data, please wait...</p>
-    <p class="error">Oops! Something went wrong! Try reloading the page!</p>
+    
+    <p class="error is-hidden js-error"></p>
     <div class="cat-info"></div>
 
     <script src="./index.js" type="module"></script>
+    <script src="../node_modules/notiflix/dist/notiflix-3.2.6.min.js"></script>
   </body>
 </html>
