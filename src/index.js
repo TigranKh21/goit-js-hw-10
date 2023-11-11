@@ -1,20 +1,76 @@
-const selectEl = document.querySelector('.breed-select');
-const { TheCatAPI } = require('@thatapicompany/thecatapi');
-import axios from 'axios';
-const BASE_URL = 'https://api.thecatapi.com/v1/';
-const END_POINT_imgSetUrl = 'images/search?limit=10';
-const theCatAPI = new TheCatAPI(
-  'live_vYPnJ0OEjt4G6A3LHZ3mj7I6QPG7GFl8UnqueC7ySK7sp0u4p5S11m5XYINK9qJr'
-);
-fetch(BASE_URL + END_POINT_imgSetUrl);
+import SlimSelect from 'slim-select';
+import { fetchBreeds } from './cat-api';
+import { fetchCatByBreed } from './cat-api';
 
-theCatAPI.images
-  .searchImages({
-    limit: 6,
-  })
-  .then(images => {
-    console.log(images);
-  })
-  .catch(error => {
-    // handle error
+const refs = {
+  selectEl: document.getElementById('mySelect'),
+  markupEl: document.querySelector('.cat-info'),
+};
+const { TheCatAPI } = require('@thatapicompany/thecatapi');
+
+const MY_API_KEY =
+  'live_IXrVe8p22GR9cDuw6rHaWFqK7NKVsZFoi0WqQxAzF9wFr1ROVWPb4WQlTevMOBzU';
+const theCatAPI = new TheCatAPI(MY_API_KEY);
+
+//const selectedArr = fetchBreeds();
+/* .map(({ name, id, url, description }) => {
+  return name, id, url, description;
+}); */
+
+async function fetchData() {
+  try {
+    const data = await fetchBreeds();
+    data.forEach(element => {
+      const option = document.createElement('option');
+      option.value = element.id;
+      option.text = element.name;
+      refs.selectEl.add(option);
+    });
+    //console.log(data);
+    return data;
+  } catch (error) {
+    console.error('Error: ', error);
+  }
+}
+
+fetchData().then(() => {
+  new SlimSelect({
+    select: refs.selectEl,
   });
+});
+//console.log(selectedArr);
+
+/*
+  .then(data => {
+    data.forEach(element => {
+      const option = document.createElement('option');
+      option.value = element.id;
+      option.text = element.name;
+      refs.selectEl.add(option);
+    });
+    return data;
+  })
+  .then(data => {
+    new SlimSelect({
+      select: refs.selectEl,
+    });
+  });
+*/
+
+refs.selectEl.addEventListener('change', event => {
+  const id = event.target.value;
+
+  fetchCatByBreed(id).then(image => {
+    const url = image[0].url;
+    fetchData().then(data => {
+      data.forEach(breed => {
+        if (breed.id === id) {
+          const description = breed.description;
+          const name = breed.name;
+          const markup = `<img src="${url}" width="800" height="auto"><span><H2>${name}</H2><p>${description}</p></span>`;
+          refs.markupEl.innerHTML = markup;
+        }
+      });
+    });
+  });
+});
