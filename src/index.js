@@ -63,6 +63,7 @@ refs.selectEl.addEventListener('change', event => {
 });
 
 function onError() {
+  refs.selectEl.innerHTML = '';
   Notiflix.Notify.failure(
     'Oops! Something went wrong! Try reloading the page!'
   );
